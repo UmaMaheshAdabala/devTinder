@@ -1,49 +1,34 @@
 const express = require("express");
-
 const app = express();
-const { adminAuth, userAuth } = require("./middlewares/auth");
-// Admin Auth
-app.use("/admin", adminAuth);
-//user Auth
-// app.use("/user", userAuth);
+const { connectDB } = require("./config/database");
 
-app.get("/admin/getAllData", (req, res) => {
-  res.send("All the data sent successfully!!!");
+const User = require("./models/user");
+
+// creating an instance to user
+
+app.post("/signup", async (req, res) => {
+  const user = new User({
+    firstName: "Umesh",
+    lastName: "Adabala",
+    emailId: "umesh@gmail.com",
+    password: "umesh@123",
+  });
+  try {
+    await user.save();
+    res.send("Data added Successfully!!!");
+  } catch (err) {
+    res.status(400).send("Data not added: " + err.message);
+  }
 });
 
-app.get("/user/getAllData", userAuth, (req, res) => {
-  res.send("All the user data sent!!!");
-});
-
-app.get("/admin/deleteData", (req, res) => {
-  res.send("Data Deleted!!!");
-});
-
-app.get("/user/deleteData", userAuth, (req, res) => {
-  res.send("User Deleted!!!");
-});
-
-//----------------------------------------------------------------
-
-// app.get("/user", (req, res) => {
-//   res.send({ firstName: "Umesh", lastName: "Adabala" });
-// });
-// app.post("/user", (req, res) => {
-//   res.send("Data posted successfully!!");
-// });
-// app.delete("/user", (req, res) => {
-//   res.send("Data deleted!!");
-// });
-
-// app.get("/test/:testid/result/:resultid", (req, res) => {
-//   console.log(req.params);
-//   res.send("Test the server!!");
-// });
-
-// app.get("/home", (req, res) => {
-//   res.send("Home!!");
-// });
-
-app.listen(7777, () => {
-  console.log("Server is running!!!");
-});
+//connecting to the cluster
+connectDB()
+  .then(() => {
+    console.log("Connection  to DataBase Established!!!");
+    app.listen(7777, () => {
+      console.log("Server is running!!!");
+    });
+  })
+  .catch((err) => {
+    console.err("Connection Failed!!!");
+  });
