@@ -4,9 +4,12 @@ const { connectDB } = require("./config/database");
 const { validateSignup } = require("./utils/validate");
 const bcrypt = require("bcrypt");
 const User = require("./models/user");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
 // creating an instance to user
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try {
@@ -22,6 +25,7 @@ app.post("/signup", async (req, res) => {
       password: passwordHash,
     });
     await user.save();
+
     res.send("Data added Successfully!!!");
   } catch (err) {
     res.status(400).send("Data not added: " + err.message);
@@ -37,9 +41,40 @@ app.post("/login", async (req, res) => {
     if (!user) throw new Error("Invalid Credentials!!!");
     const isValidUser = bcrypt.compare(password, user.password);
     if (!isValidUser) throw new Error("Invalid Credentils!!");
-    res.send("Login Successfull");
+    else {
+      // creating JWT
+      const token = await jwt.sign({ _id: user._id }, "Umesh@123$#");
+      // sending cookie
+      res.cookie("token", token);
+      res.send("Login Successfull");
+    }
   } catch (err) {
     res.status(400).send("Error " + err.message);
+  }
+});
+//Get profile
+
+app.get("/profile", async (req, res) => {
+  try {
+    // Getting the cookie from response
+    const cookies = req.cookies;
+    const { token } = cookies;
+    if (!token) throw new Error("Invalid token");
+
+    //Authenticating the cookie
+
+    const decodedMessage = await jwt.verify(token, "Umesh@123$#");
+    const { _id } = decodedMessage;
+    console.log(_id);
+    const user = await User.findById(_id);
+    console.log(user);
+    if (!user) {
+      throw new Error("Invalid Token");
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(400).send("Error: " + err.message);
   }
 });
 
