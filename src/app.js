@@ -28,7 +28,7 @@ app.get("/user", async (req, res) => {
     res.status(404).send("Something went wrong!!");
   }
 });
-
+// Get All users from DB
 app.get("/feed", async (req, res) => {
   try {
     const users = await User.find({});
@@ -39,6 +39,7 @@ app.get("/feed", async (req, res) => {
   }
 });
 
+//  Get user by USER ID
 app.get("/user/id", async (req, res) => {
   const id = req.body._id;
   try {
@@ -48,6 +49,19 @@ app.get("/user/id", async (req, res) => {
     else res.send(user);
   } catch (err) {
     res.status(400).send("Something went wrong!!!:" + err.message);
+  }
+});
+
+// Delete a user by the User Id
+
+app.delete("/user", async (req, res) => {
+  const id = req.body.id;
+  try {
+    const user = await User.findByIdAndDelete(id);
+    if (user) res.send("User Deleted Successfully");
+    else res.status(404).send("User Not Found");
+  } catch (err) {
+    res.status(400).send("Something wend wrong!!!");
   }
 });
 
