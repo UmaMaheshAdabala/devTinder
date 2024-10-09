@@ -67,28 +67,39 @@ app.delete("/user", async (req, res) => {
 
 // update user by user ID
 
-// app.patch("/user", async (req, res) => {
-//   const data = req.body;
-//   try {
-//     await User.findByIdAndUpdate(data.id, data);
-//     res.send("Updated Successfully");
-//   } catch (err) {
-//     res.status(400).send("Something went wrong!!!");
-//   }
-// });
-
-// update by User Emailid
-app.patch("/user", async (req, res) => {
+app.patch("/user/:userId", async (req, res) => {
   const data = req.body;
+  const userId = req.params.userId;
+  const allowedData = ["age", "gender", "firstName"];
+
   try {
-    await User.findOneAndUpdate({ emailId: data.email }, data, {
+    const isAllowed = Object.keys(data).every((k) => {
+      return allowedData.includes(k);
+    });
+    console.log(isAllowed);
+    if (!isAllowed) throw new Error("Changing the above data is not allowed");
+    await User.findByIdAndUpdate(userId, data, {
       runValidators: true,
     });
     res.send("Updated Successfully");
   } catch (err) {
-    res.status(400).send("Something went wrong!!!");
+    res.status(400).send("Something went wrong!!!" + err.message);
   }
 });
+
+// update by User Emailid
+// app.patch("/user", async (req, res) => {
+//   const data = req.body;
+
+//   try {
+//     await User.findOneAndUpdate({ emailId: data.email }, data, {
+//       runValidators: true,
+//     });
+//     res.send("Updated Successfully");
+//   } catch (err) {
+//     res.status(400).send("Something went wrong!!!"+ err.message);
+//   }
+// });
 
 //connecting to the cluster
 connectDB()
