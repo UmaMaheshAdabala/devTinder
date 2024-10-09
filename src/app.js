@@ -65,6 +65,31 @@ app.delete("/user", async (req, res) => {
   }
 });
 
+// update user by user ID
+
+// app.patch("/user", async (req, res) => {
+//   const data = req.body;
+//   try {
+//     await User.findByIdAndUpdate(data.id, data);
+//     res.send("Updated Successfully");
+//   } catch (err) {
+//     res.status(400).send("Something went wrong!!!");
+//   }
+// });
+
+// update by User Emailid
+app.patch("/user", async (req, res) => {
+  const data = req.body;
+  try {
+    await User.findOneAndUpdate({ emailId: data.email }, data, {
+      runValidators: true,
+    });
+    res.send("Updated Successfully");
+  } catch (err) {
+    res.status(400).send("Something went wrong!!!");
+  }
+});
+
 //connecting to the cluster
 connectDB()
   .then(() => {
