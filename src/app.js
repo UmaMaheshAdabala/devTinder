@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const User = require("./models/user");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const userAuth = require("./middlewares/auth");
 
 // creating an instance to user
 app.use(express.json());
@@ -39,11 +40,14 @@ app.post("/login", async (req, res) => {
     const { emailId, password } = req.body;
     const user = await User.findOne({ emailId: emailId });
     if (!user) throw new Error("Invalid Credentials!!!");
-    const isValidUser = bcrypt.compare(password, user.password);
+    //Validating password
+    // -- Ofloaded to userSchema
+    const isValidUser = await user.validatePassword(password);
     if (!isValidUser) throw new Error("Invalid Credentils!!");
     else {
       // creating JWT
-      const token = await jwt.sign({ _id: user._id }, "Umesh@123$#");
+      // -- Off Loaded to userSchema;
+      const token = await user.getJWT();
       // sending cookie
       res.cookie("token", token);
       res.send("Login Successfull");
@@ -56,18 +60,13 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", async (req, res) => {
   try {
-    // Getting the cookie from response
     const cookies = req.cookies;
     const { token } = cookies;
     if (!token) throw new Error("Invalid token");
 
-    //Authenticating the cookie
-
     const decodedMessage = await jwt.verify(token, "Umesh@123$#");
     const { _id } = decodedMessage;
-    console.log(_id);
     const user = await User.findById(_id);
-    console.log(user);
     if (!user) {
       throw new Error("Invalid Token");
     } else {
@@ -172,5 +171,5 @@ connectDB()
     });
   })
   .catch((err) => {
-    console.err("Connection Failed!!!");
+    console.error("Connection Failed!!!");
   });
