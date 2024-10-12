@@ -10,9 +10,12 @@ const userAuth = async (req, res, next) => {
     const decodedMessage = await jwt.verify(token, "Umesh@123$#");
     const { _id } = decodedMessage;
     const user = User.findById(id);
-    req.user = user;
+
     if (!user) throw new Error("User not present");
-    else next();
+    else {
+      req.user = user;
+      next();
+    }
   } catch (err) {
     res.status(400).send("ERROR: " + err.message);
   }
