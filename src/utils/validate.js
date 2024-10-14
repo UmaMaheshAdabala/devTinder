@@ -8,4 +8,12 @@ const validateSignup = (req) => {
     throw new Error("Enter Strong Password!!");
 };
 
-module.exports = { validateSignup };
+const validateInputData = (req) => {
+  const allowedData = ["firstName", "lastName", "age"];
+  const isValidData = Object.keys(req.body).every((key) =>
+    allowedData.includes(key)
+  );
+  return isValidData;
+};
+
+module.exports = { validateSignup, validateInputData };

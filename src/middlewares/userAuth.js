@@ -9,7 +9,7 @@ const userAuth = async (req, res, next) => {
     //Authenticating the cookie
     const decodedMessage = await jwt.verify(token, "Umesh@123$#");
     const { _id } = decodedMessage;
-    const user = User.findById(id);
+    const user = await User.findById(_id);
 
     if (!user) throw new Error("User not present");
     else {
