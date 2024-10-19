@@ -9,7 +9,14 @@ const validateSignup = (req) => {
 };
 
 const validateInputData = (req) => {
-  const allowedData = ["firstName", "lastName", "age"];
+  const allowedData = [
+    "firstName",
+    "lastName",
+    "age",
+    "gender",
+    "photoUrl",
+    "about",
+  ];
   const isValidData = Object.keys(req.body).every((key) =>
     allowedData.includes(key)
   );

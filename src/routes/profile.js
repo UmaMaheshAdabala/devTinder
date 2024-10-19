@@ -12,7 +12,7 @@ profileRouter.get("/profile", userAuth, async (req, res) => {
   try {
     const user = req.user;
     if (!user) {
-      throw new Error("Invalid Token");
+      res.status(401).send("Invalid Token");
     } else {
       res.send(user);
     }
@@ -33,10 +33,11 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
       await loggedInUser.save();
       console.log(loggedInUser);
 
-      res.send("Data Updated successfully!");
+      res.json({ message: "Data Updated successfully!", loggedInUser });
     }
   } catch (err) {
     res.status(400).send("Error" + err.message);
+    console.log(err.message);
   }
 });
 

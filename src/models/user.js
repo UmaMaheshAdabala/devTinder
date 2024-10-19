@@ -37,6 +37,15 @@ const userSchema = new mongoose.Schema(
           throw new Error("Gender is not valid!!");
       },
     },
+    about: {
+      type: String,
+      default: "Hey! there I'm Using DevTinder",
+    },
+    photoUrl: {
+      type: String,
+      default:
+        "https://www.shareicon.net/data/128x128/2017/05/30/886556_user_512x512.png",
+    },
   },
   {
     timestamps: true,
