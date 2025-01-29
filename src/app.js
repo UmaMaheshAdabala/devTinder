@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 const { connectDB } = require("./config/database");
 const cookieParser = require("cookie-parser");
 const authRouter = require("./routes/auth");
@@ -7,6 +8,7 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 const cors = require("cors");
+const premiumRouter = require("./routes/premium");
 
 // creating an instance to user
 app.use(express.json());
@@ -22,6 +24,7 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
+app.use("/", premiumRouter);
 
 //connecting to the cluster
 connectDB()

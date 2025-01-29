@@ -8,7 +8,10 @@ const userAuth = async (req, res, next) => {
     if (!token) res.status(401).send("Please Login!!");
     //Authenticating the cookie
     else {
-      const decodedMessage = await jwt.verify(token, "Umesh@123$#");
+      const decodedMessage = await jwt.verify(
+        token,
+        process.env.JWT_SECRET_STRING
+      );
       const { _id } = decodedMessage;
       const user = await User.findById(_id);
 

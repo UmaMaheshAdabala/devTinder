@@ -46,6 +46,13 @@ const userSchema = new mongoose.Schema(
       default:
         "https://www.shareicon.net/data/128x128/2017/05/30/886556_user_512x512.png",
     },
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
+    membershipType: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -55,9 +62,13 @@ const userSchema = new mongoose.Schema(
 userSchema.methods.getJWT = async function () {
   //creating JWT token
   const user = this;
-  const token = await jwt.sign({ _id: user._id }, "Umesh@123$#", {
-    expiresIn: "7d",
-  });
+  const token = await jwt.sign(
+    { _id: user._id },
+    process.env.JWT_SECRET_STRING,
+    {
+      expiresIn: "7d",
+    }
+  );
   return token;
 };
 
