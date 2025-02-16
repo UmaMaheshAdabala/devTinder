@@ -37,3 +37,24 @@
 - Save the script of razorpay in index.html file
 - craete the options using the order that we get from backend
 - Then call the razorpay dialogue box open method using the options
+
+## WebSockets (Sockets.io)
+
+- Server Side Configuration:
+
+  - Require socket.io package
+  - use http server
+  - initializeSocket using the server;
+  - create a io using the socket.io package with the server
+  - In the io create events on the connection
+  - Then Create a room for both the users
+  - Then using that room create events for sending messages....
+  - Receive the request of joinRoom
+  - Emit the event for "receive message"
+
+- Client Side Configuration
+  - Import socket.io-client package
+  - create a socketConnection using the BASEURL of the backend using the package imported;
+  - Then emit the actions for the events that we created in the backend
+  - Emit the action to joinChat
+  - Receive the action for "Receive Message" from server

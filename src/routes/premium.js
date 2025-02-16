@@ -3,7 +3,7 @@ const { userAuth } = require("../middlewares/userAuth");
 const premiumRouter = express.Router();
 const razorpayInstance = require("../utils/razorpay");
 const Payment = require("../models/payment");
-const membershipAmount = require("..utils/constants");
+const membershipAmount = require("../utils/constants");
 const User = require("../models/user");
 
 premiumRouter.post("/premium/create", userAuth, async (req, res) => {
